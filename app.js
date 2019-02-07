@@ -1,24 +1,45 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const Grid = require('gridfs-stream');
 
-var app = express();
+const upLoadRoute = require('./routes/upload');
+const usersRouter = require('./routes/users');
 
-// view engine setup
+const config = require('./config/config');
+const conn = mongoose.connection;
+
+mongoose.connect(config.connection, { useNewUrlParser: true }).then(() => console.log('connected to Atlas')).catch(err => console.log(err));
+
+const app = express();
+
+let gfs;
+
+conn.once('open', () => {
+  // Init stream
+  gfs = Grid(conn.db, mongoose.mongo);
+  gfs.collection('uploads');
+  console.log('gridfs ready!!');
+});
+
+
+
 
 
 app.use(logger('dev'));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 
 app.use(cors());
-app.use('/', indexRouter);
+
+app.use('/api/upload', upLoadRoute);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
