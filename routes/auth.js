@@ -6,6 +6,7 @@ router
   .get("/", (req, res, next) => {
     res.send("Auth route");
   })
-  .post("/", authController.createUser);
+  .post("/register", authController.createUser)
+  .post("/login", authController.login);
 
 module.exports = router;
