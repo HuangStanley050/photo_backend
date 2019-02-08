@@ -1,46 +1,44 @@
-const createError = require('http-errors');
-const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
+const createError = require("http-errors");
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
 
-const Grid = require('gridfs-stream');
+const Grid = require("gridfs-stream");
 
-const upLoadRoute = require('./routes/upload');
-const usersRouter = require('./routes/users');
+const upLoadRoute = require("./routes/upload");
+const authRouter = require("./routes/auth");
 
-const config = require('./config/config');
+const config = require("./config/config");
 const conn = mongoose.connection;
 
-mongoose.connect(config.connection, { useNewUrlParser: true }).then(() => console.log('connected to Atlas')).catch(err => console.log(err));
+mongoose
+  .connect(config.connection, { useNewUrlParser: true })
+  .then(() => console.log("connected to Atlas"))
+  .catch(err => console.log(err));
 
 const app = express();
 
 let gfs;
 
-conn.once('open', () => {
+conn.once("open", () => {
   // Init stream
   gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection('uploads');
-  console.log('gridfs ready!!');
+  gfs.collection("uploads");
+  console.log("gridfs ready!!");
 });
 
-
-
-
-
-app.use(logger('dev'));
+app.use(logger("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-
 app.use(cors());
 
-app.use('/api/upload', upLoadRoute);
-app.use('/users', usersRouter);
+app.use("/api/upload", upLoadRoute);
+app.use("/api/auth", authRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -51,11 +49,11 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.error = req.app.get("env") === "development" ? err : {};
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render("error");
 });
 
 module.exports = app;

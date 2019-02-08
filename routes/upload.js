@@ -10,7 +10,8 @@ const storage = new GridFsStorage({
     file: (req, file) => {
         if (file.mimetype === 'image/jpeg') {
             return {
-                bucketName: 'photos'
+                bucketName: 'photos',
+                filename: file.originalname
             };
         }
         else {
@@ -20,6 +21,8 @@ const storage = new GridFsStorage({
 });
 
 const upload = multer({ storage });
+
+
 
 /* upload route. */
 router.post('/', upload.single('file'), upLoadController.upload);
