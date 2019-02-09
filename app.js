@@ -8,13 +8,14 @@ const passport = require("passport");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
-const Grid = require("gridfs-stream");
+//const Grid = require("gridfs-stream");
 
 const upLoadRoute = require("./routes/upload");
 const authRouter = require("./routes/auth");
+const fileRouter = require("./routes/file");
 
 const config = require("./config/config");
-const conn = mongoose.connection;
+//const conn = mongoose.connection;
 
 mongoose
   .connect(config.connection, { useNewUrlParser: true })
@@ -23,14 +24,16 @@ mongoose
 
 const app = express();
 
-let gfs;
+// let gfs;
 
-conn.once("open", () => {
-  // Init stream
-  gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection("uploads");
-  console.log("gridfs ready!!");
-});
+// conn.once("open", () => {
+//   // Init stream
+//   gfs = Grid(conn.db, mongoose.mongo);
+//   gfs.collection("uploads");
+//   console.log("gridfs ready!!");
+// });
+
+require("./config/gfs");
 
 app.use(logger("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -38,10 +41,12 @@ app.use(bodyParser.json());
 
 app.use(passport.initialize());
 require("./config/passport")(passport);
+
 app.use(cors());
 
 app.use("/api/upload", upLoadRoute);
 app.use("/api/auth", authRouter);
+app.use("/api/files", fileRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

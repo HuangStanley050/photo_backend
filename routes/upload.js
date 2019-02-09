@@ -12,8 +12,7 @@ const storage = new GridFsStorage({
     if (file.mimetype === "image/jpeg") {
       return {
         bucketName: "photos",
-        filename: file.originalname,
-        fileId: file.id
+        filename: file.originalname
       };
     } else {
       return null;
