@@ -1,4 +1,4 @@
 exports.upload = (req, res, next) => {
-
-    res.json({ file: req.file.originalname });
+  console.log(req.user);
+  res.json({ file: req.file.originalname });
 };

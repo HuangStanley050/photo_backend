@@ -20,7 +20,7 @@ exports.createUser = async (req, res, next) => {
         password: hashedpassword
       });
       let createdUser = await newUser.save();
-      res.json({ message: "User created", userId: createdUser._id });
+      res.json({ message: "User created", userId: createdUser.id });
     }
   } catch (err) {
     throw err;
@@ -50,9 +50,9 @@ exports.login = async (req, res, next) => {
         id: user.id,
         name: user.name
       };
-      console.log(secret.secret);
+
       const token = jwt.sign(payload, secret.secret, { expiresIn: "1h" });
-      res.json({ token: token, userId: user.id });
+      res.json({ token: token, userName: user.name });
     }
   } catch (err) {
     next(err);
