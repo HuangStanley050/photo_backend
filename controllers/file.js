@@ -27,3 +27,18 @@ exports.get_files = (req, res, next) => {
   });
   //res.send("hi");
 };
+
+exports.get_file = (req, res, next) => {
+  //res.json({ msg: req.params.fileName });
+  gfs.files.findOne({ filename: req.params.fileName }, (err, file) => {
+    if (err) {
+      next(err);
+    }
+    if (!file || file.length === 0 || file === null) {
+      const error = new Error("no such file");
+      next(error);
+    } else {
+      return res.json(file);
+    }
+  });
+};
