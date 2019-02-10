@@ -42,3 +42,18 @@ exports.get_file = (req, res, next) => {
     }
   });
 };
+
+exports.get_one_image = (req, res, next) => {
+  gfs.files.findOne({ filename: req.params.fileName }, (err, file) => {
+    if (err) {
+      next(err);
+    }
+    if (!file || file.length === 0 || file === null) {
+      const error = new Error("no such file");
+      next(error);
+    } else {
+      const readstream = gfs.createReadStream(file.filename);
+      readstream.pipe(res);
+    }
+  });
+};
