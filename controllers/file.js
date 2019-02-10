@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const User = require("../models/user");
 const Grid = require("gridfs-stream");
 const { connection } = require("../config/config");
 const conn = mongoose.createConnection(connection);
@@ -56,4 +56,16 @@ exports.get_one_image = (req, res, next) => {
       readstream.pipe(res);
     }
   });
+};
+
+exports.load_user_images = async (req, res, next) => {
+  const userId = req.user.id;
+  let photos = [];
+  try {
+    let user = await User.findById(userId);
+    photos = user.photos.slice();
+    res.json(photos);
+  } catch (err) {
+    next(err);
+  }
 };
