@@ -14,7 +14,9 @@ const userSchema = new Schema({
     type: String,
     required: true
   },
-  photos: [{ type: Schema.Types.ObjectId, filename: String }]
+  photos: [
+    { photoId: { type: Schema.Types.ObjectId }, photoName: { type: String } }
+  ]
 });
 
 module.exports = mongoose.model("User", userSchema);

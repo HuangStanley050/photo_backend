@@ -8,14 +8,11 @@ const passport = require("passport");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
-// const Grid = require("gridfs-stream");
-
 const upLoadRoute = require("./routes/upload");
 const authRouter = require("./routes/auth");
 const fileRouter = require("./routes/file");
 
 const config = require("./config/config");
-// const conn = mongoose.connection;
 
 mongoose
   .connect(config.connection, { useNewUrlParser: true })
@@ -23,17 +20,6 @@ mongoose
   .catch(err => console.log(err));
 
 const app = express();
-
-// let gfs;
-
-// conn.once("open", () => {
-//   // Init stream
-//   gfs = Grid(conn.db, mongoose.mongo);
-//   gfs.collection("uploads");
-//   console.log("gridfs ready!!");
-// });
-
-//require("./config/gfs");
 
 app.use(logger("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
