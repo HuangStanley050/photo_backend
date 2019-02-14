@@ -23,7 +23,7 @@ exports.createUser = async (req, res, next) => {
       res.json({ message: "User created", userId: createdUser.id });
     }
   } catch (err) {
-    throw err;
+    next(err);
   }
 };
 
