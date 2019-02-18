@@ -41,7 +41,7 @@ router
     fileController.load_user_images
   )
   .post(
-    "/image/public/:photoId",
+    "/image/public/",
     passport.authenticate("jwt", { session: false }),
     fileController.make_public
   );

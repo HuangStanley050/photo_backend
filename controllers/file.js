@@ -73,29 +73,24 @@ exports.load_user_images = async (req, res, next) => {
 
 exports.make_public = async (req, res, next) => {
   //res.send(req.params.photoId);
-  const photoId = req.params.photoId;
+  const photoId = req.query.photoId;
+  const photoName = req.query.photoName;
   const userId = req.user.id;
+  //res.json({ photoId, photoName });
   //res.status(200).send(userId);
   try {
     let publicPhoto = await Public.findOne({ userId });
-    if (publicPhoto) {
-      const error = new Error("Photo is already public");
-      throw error;
-    } else {
-      //if the show case is empty create one
-      if (publicPhoto.showCase.length !== 0) {
-        const newPublicPhoto = Public({
-          userId,
-          showCase: [{ photoId }]
-        });
-        await newPublicPhoto.save();
-        res.json({ message: "success" });
-      } else {
-        publicPhoto.showCase.push({ photoId });
-        await publicPhoto.save();
-        res.json({ message: "append success" });
-      }
+    if (!publicPhoto) {
+      const newPublicPhoto = Public({
+        userId,
+        showCase: [{ photoId, photoName }]
+      });
+      await newPublicPhoto.save();
+      res.json({ message: "created!" });
     }
+    publicPhoto.showCase.push({ photoId, photoName });
+    let result = await publicPhoto.save();
+    res.json(result);
   } catch (err) {
     next(err);
   }
