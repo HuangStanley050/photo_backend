@@ -39,6 +39,11 @@ router
     "/user/images",
     passport.authenticate("jwt", { session: false }),
     fileController.load_user_images
+  )
+  .post(
+    "/image/public/:photoId",
+    passport.authenticate("jwt", { session: false }),
+    fileController.make_public
   );
 
 module.exports = router;
