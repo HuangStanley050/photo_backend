@@ -95,3 +95,37 @@ exports.make_public = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.unmake_public = async (req, res, next) => {
+  //res.json({ msg: "unmake public photoId: " + req.query.photoId });
+  const photoId = req.query.photoId;
+  const userId = req.user.id;
+  let temp_list = [];
+  try {
+    let publicPhoto = await Public.findOne({ userId });
+    //check if the user have a public collection created
+    if (!publicPhoto) {
+      const error = new Error("You have no public photos available");
+      throw error;
+    }
+    //check if the photoId is in the public collection document
+    //=========== using toString() to convert mongodb objectId so can compare with the query string
+    if (
+      !publicPhoto.showCase.find(photo => photo.photoId.toString() === photoId)
+    ) {
+      const error = new Error("the photo is not in the public view");
+      throw error;
+    }
+
+    temp_list = publicPhoto.showCase.slice();
+    //=========== using toString() to convert mongodb objectId so can compare with the query string
+    let newlist = temp_list.filter(
+      photo => photo.photoId.toString() !== photoId
+    );
+    publicPhoto.showCase = newlist.slice();
+    await publicPhoto.save();
+    res.json(newlist);
+  } catch (err) {
+    next(err);
+  }
+};

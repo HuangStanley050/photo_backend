@@ -44,6 +44,11 @@ router
     "/image/public/",
     passport.authenticate("jwt", { session: false }),
     fileController.make_public
+  )
+  .delete(
+    "/image/public/",
+    passport.authenticate("jwt", { session: false }),
+    fileController.unmake_public
   );
 
 module.exports = router;
