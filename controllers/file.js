@@ -62,10 +62,14 @@ exports.get_one_image = (req, res, next) => {
 exports.load_user_images = async (req, res, next) => {
   const userId = req.user.id;
   let photos = [];
+  let publicPhotos = [];
+  //need to load all the public photos user has and send to front end
   try {
     let user = await User.findById(userId);
     photos = user.photos.slice();
-    res.json(photos);
+    let publicphoto = await Public.findOne({ userId });
+    publicPhotos = publicphoto.showCase.slice();
+    res.json({ photos, publicPhotos });
   } catch (err) {
     next(err);
   }
