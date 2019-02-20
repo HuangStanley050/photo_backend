@@ -3,7 +3,7 @@ const User = require("../models/user");
 const Public = require("../models/public");
 const Grid = require("gridfs-stream");
 const { connection } = require("../config/config");
-const conn = mongoose.createConnection(connection);
+const conn = mongoose.createConnection(connection, { useNewUrlParser: true });
 
 let gfs;
 
@@ -86,7 +86,13 @@ exports.make_public = async (req, res, next) => {
         showCase: [{ photoId, photoName }]
       });
       await newPublicPhoto.save();
-      res.json({ message: "created!" });
+      return res.json({ message: "created!" });
+    }
+    if (
+      publicPhoto.showCase.find(photo => photo.photoId.toString() === photoId)
+    ) {
+      const error = new Error("The photo is already in public collection");
+      throw error;
     }
     publicPhoto.showCase.push({ photoId, photoName });
     let result = await publicPhoto.save();
