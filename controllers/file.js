@@ -96,6 +96,7 @@ exports.make_public = async (req, res, next) => {
       publicPhoto.showCase.find(photo => photo.photoId.toString() === photoId)
     ) {
       const error = new Error("The photo is already in public collection");
+      error.data = photoId;
       throw error;
     }
     publicPhoto.showCase.push({ photoId, photoName });
