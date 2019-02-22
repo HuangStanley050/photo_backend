@@ -117,6 +117,7 @@ exports.unmake_public = async (req, res, next) => {
     //check if the user have a public collection created
     if (!publicPhoto) {
       const error = new Error("You have no public photos available");
+
       throw error;
     }
     //check if the photoId is in the public collection document
@@ -125,6 +126,7 @@ exports.unmake_public = async (req, res, next) => {
       !publicPhoto.showCase.find(photo => photo.photoId.toString() === photoId)
     ) {
       const error = new Error("the photo is not in the public view");
+      error.data = photoId;
       throw error;
     }
 
