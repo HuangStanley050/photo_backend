@@ -8,8 +8,6 @@ const conn = mongoose.createConnection(connection, { useNewUrlParser: true });
 let gfs;
 
 conn.once("open", () => {
-  // Init stream
-  //console.log(conn.db);
   gfs = Grid(conn.db, mongoose.mongo);
   gfs.collection("photos");
 });
@@ -26,7 +24,6 @@ exports.get_files = (req, res, next) => {
     }
     return res.json(files);
   });
-  //res.send("hi");
 };
 
 exports.get_file = (req, res, next) => {
@@ -76,12 +73,10 @@ exports.load_user_images = async (req, res, next) => {
 };
 
 exports.make_public = async (req, res, next) => {
-  //res.send(req.params.photoId);
   const photoId = req.query.photoId;
   const photoName = req.query.photoName;
   const userId = req.user.id;
-  //res.json({ photoId, photoName });
-  //res.status(200).send(userId);
+
   try {
     let publicPhoto = await Public.findOne({ userId });
     if (!publicPhoto) {
@@ -108,7 +103,6 @@ exports.make_public = async (req, res, next) => {
 };
 
 exports.unmake_public = async (req, res, next) => {
-  //res.json({ msg: "unmake public photoId: " + req.query.photoId });
   const photoId = req.query.photoId;
   const userId = req.user.id;
   let temp_list = [];
