@@ -3,11 +3,17 @@ const User = require("../models/user");
 const Public = require("../models/public");
 const Grid = require("gridfs-stream");
 const { connection } = require("../config/config");
+
 const conn = mongoose.createConnection(connection, { useNewUrlParser: true });
 
 let gfs;
 
 conn.once("open", () => {
+  // const gridFSBucket = new mongoose.mongo.GridFSBucket(conn.db, {
+  //   bucketName: "photos"
+  // });
+  // gfs = gridFSBucket;
+  //console.log(gfs);
   gfs = Grid(conn.db, mongoose.mongo);
   gfs.collection("photos");
 });
