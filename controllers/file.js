@@ -9,13 +9,13 @@ const conn = mongoose.createConnection(connection, { useNewUrlParser: true });
 let gfs;
 
 conn.once("open", () => {
-  // const gridFSBucket = new mongoose.mongo.GridFSBucket(conn.db, {
-  //   bucketName: "photos"
-  // });
-  // gfs = gridFSBucket;
-  //console.log(gfs);
-  gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection("photos");
+  const gridFSBucket = new mongoose.mongo.GridFSBucket(conn.db, {
+    bucketName: "photos"
+  });
+  gfs = gridFSBucket;
+  console.log(gfs.find());
+  // gfs = Grid(conn.db, mongoose.mongo);
+  // gfs.collection("photos");
 });
 
 exports.get_files = (req, res, next) => {

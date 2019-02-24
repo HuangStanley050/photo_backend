@@ -27,7 +27,7 @@ var server = http.createServer(app);
  */
 
 mongoose
-  .connect(config.connection, { useNewUrlParser: false })
+  .connect(config.connection, { useNewUrlParser: true })
   .then(res => {
     server.listen(port);
     server.on("error", onError);
