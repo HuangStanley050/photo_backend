@@ -34,7 +34,7 @@ const check_token = (req, res, next) => {
 router
   .get("/", fileController.get_files)
   .get("/:fileName", fileController.get_file)
-  .get("/image/:fileName", check_token, fileController.get_one_image)
+  .get("/image/:photoId", check_token, fileController.get_one_image)
   .get(
     "/user/images",
     passport.authenticate("jwt", { session: false }),
