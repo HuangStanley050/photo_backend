@@ -152,3 +152,21 @@ exports.unmake_public = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.get_showcase = async (req, res, next) => {
+  let publicImages = [];
+  let result = [];
+  try {
+    publicImages = await Public.find({});
+    //console.log(publicImages);
+    publicImages.forEach(publicimage => {
+      for (let i of publicimage.showCase) {
+        result.push(i);
+      }
+    });
+    //console.log(result);
+    res.json({ result });
+  } catch (err) {
+    next(err);
+  }
+};

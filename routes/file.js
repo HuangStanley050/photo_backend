@@ -40,6 +40,7 @@ router
     passport.authenticate("jwt", { session: false }),
     fileController.load_user_images
   )
+  .get("/images/public", fileController.get_showcase)
   .post(
     "/image/public/",
     passport.authenticate("jwt", { session: false }),
