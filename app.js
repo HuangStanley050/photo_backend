@@ -6,22 +6,15 @@ const logger = require("morgan");
 const cors = require("cors");
 const passport = require("passport");
 const bodyParser = require("body-parser");
-//const mongoose = require("mongoose");
 
 const upLoadRoute = require("./routes/upload");
 const authRouter = require("./routes/auth");
 const fileRouter = require("./routes/file");
 
-//const config = require("./config/config");
-
-// mongoose
-//   .connect(config.connection, { useNewUrlParser: true })
-//   .then(() => console.log("connected to Atlas"))
-//   .catch(err => console.log(err));
-
 const app = express();
 
 app.use(logger("dev"));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 

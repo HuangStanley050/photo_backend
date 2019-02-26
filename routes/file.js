@@ -35,12 +35,14 @@ router
   .get("/", fileController.get_files)
   .get("/:fileName", fileController.get_file)
   .get("/image/:photoId", check_token, fileController.get_one_image)
+  .get("/publicImage/:photoId", fileController.get_one_image)
   .get(
     "/user/images",
     passport.authenticate("jwt", { session: false }),
     fileController.load_user_images
   )
   .get("/images/public", fileController.get_showcase)
+
   .post(
     "/image/public/",
     passport.authenticate("jwt", { session: false }),
