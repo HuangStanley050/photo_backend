@@ -3,20 +3,19 @@ const User = require("../models/user");
 const Public = require("../models/public");
 const Grid = require("gridfs-stream");
 const { connection } = require("../config/config");
-
-const conn = mongoose.createConnection(connection, { useNewUrlParser: true });
+const gridfs = require("mongoose-gridfs");
 
 let gfs;
+const conn = mongoose.connect(connection);
 
-conn.once("open", () => {
-  const gridFSBucket = new mongoose.mongo.GridFSBucket(conn.db, {
-    bucketName: "photos"
-  });
-  gfs = gridFSBucket;
-  console.log(gfs.find());
-  // gfs = Grid(conn.db, mongoose.mongo);
-  // gfs.collection("photos");
-});
+conn
+  .then(res => {
+    gfs = gridfs({
+      mongooseConnection: mongoose.connection
+    });
+    console.log(gfs.storage.find());
+  })
+  .catch(err => console.log(err));
 
 exports.get_files = (req, res, next) => {
   gfs.files.find().toArray((err, files) => {
