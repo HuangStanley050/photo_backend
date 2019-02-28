@@ -6,16 +6,16 @@ const { connection } = require("../config/config");
 const gridfs = require("mongoose-gridfs");
 
 let gfs;
-const conn = mongoose.connect(connection);
 
-conn
-  .then(res => {
-    gfs = gridfs({
-      mongooseConnection: mongoose.connection
-    });
-    console.log(gfs.storage.find());
-  })
-  .catch(err => console.log(err));
+const conn = mongoose.connection;
+
+conn.once("open", () => {
+  gfs = gridfs({
+    collection: "photos",
+    model: "Photo",
+    mongooseConnection: conn
+  });
+});
 
 exports.get_files = (req, res, next) => {
   gfs.files.find().toArray((err, files) => {
