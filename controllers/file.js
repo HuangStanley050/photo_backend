@@ -18,17 +18,26 @@ conn.once("open", () => {
 });
 
 exports.get_files = (req, res, next) => {
-  gfs.files.find().toArray((err, files) => {
+  //console.log(gfs);
+  const id = mongoose.Types.ObjectId("5c6a77427278ba0400f3f38c");
+  gfs.readById(id, (err, data) => {
     if (err) {
       next(err);
     }
-
-    if (!files || files.length === 0) {
-      const error = new Error("no files found");
-      next(error);
-    }
-    return res.json(files);
+    data.pipe(res);
   });
+  res.send("you hit the route for files");
+  // gfs.files.find().toArray((err, files) => {
+  //   if (err) {
+  //     next(err);
+  //   }
+
+  //   if (!files || files.length === 0) {
+  //     const error = new Error("no files found");
+  //     next(error);
+  //   }
+  //   return res.json(files);
+  // });
 };
 
 exports.get_file = (req, res, next) => {
