@@ -12,6 +12,8 @@ conn.once("open", () => {
   gfs.collection("photos");
 });
 
+console.log(gfs);
+
 exports.get_files = (req, res, next) => {
   gfs.files.find().toArray((err, files) => {
     if (err) {
