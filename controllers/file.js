@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const User = require("../models/user");
 const Public = require("../models/public");
+const Rating = require("../models/rating");
 const Grid = require("gridfs-stream");
 const { connection } = require("../config/config");
 const conn = mongoose.createConnection(connection, { useNewUrlParser: true });
@@ -171,4 +172,28 @@ exports.get_showcase = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+exports.ratePhoto = async (req, res, next) => {
+  //res.json({ id: req.params.photoId, data: req.body });
+  const { reviewerId, photoId, ratings, reviewerName } = req.body;
+  //console.log(reviewerId, photoId, ratings);
+
+  try {
+    let ratePhoto = await Rating.findOne({ photoId });
+    if (!ratePhoto) {
+      const newRatePhoto = Rating({
+        photoId: photoId,
+        ratings: [{ reviewerId, reviewerName, ratings }]
+      });
+      await newRatePhoto.save();
+      return res.json({ msg: "created" });
+    }
+    ratePhoto.ratings.push({ reviewerId, reviewerName, ratings });
+    let result = await ratePhoto.save();
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+  //res.json({ msg: "success" });
 };
