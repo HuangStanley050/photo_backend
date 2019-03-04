@@ -10,23 +10,24 @@ let gfs;
 const conn = mongoose.connection;
 
 conn.once("open", () => {
-  gfs = gridfs({
-    collection: "photos",
-    model: "Photo",
-    mongooseConnection: conn
-  });
+  gfs = new mongoose.mongo.GridFSBucket(conn.db, { bucketName: "photos" });
+  // gfs = gridfs({
+  //   collection: "photos",
+  //   model: "Photo",
+  //   mongooseConnection: conn
+  // });
 });
 
 exports.get_files = (req, res, next) => {
   //console.log(gfs);
   const id = mongoose.Types.ObjectId("5c6a77427278ba0400f3f38c");
-  gfs.readById(id, (err, data) => {
-    if (err) {
-      next(err);
-    }
-    data.pipe(res);
-  });
-  res.send("you hit the route for files");
+
+  const download = gfs.openDownloadStream(id);
+  return download.pipe(res);
+
+  //console.log(downloadStream);
+
+  //res.send("you hit the route for files");
   // gfs.files.find().toArray((err, files) => {
   //   if (err) {
   //     next(err);
