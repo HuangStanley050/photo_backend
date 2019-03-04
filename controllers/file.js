@@ -189,6 +189,21 @@ exports.ratePhoto = async (req, res, next) => {
       await newRatePhoto.save();
       return res.json({ msg: "created" });
     }
+
+    //=======find out if the person has already reviewed the photo
+    let reviewer = ratePhoto.ratings.find(reviewer => {
+      return reviewer.reviewerId.toString() === reviewerId;
+    });
+
+    if (reviewer) {
+      const error = new Error();
+      error.message = "You have already reviewed the photo";
+      error.data = photoId;
+      //console.log(error);
+      throw error;
+    }
+    //================end test=========================//
+
     ratePhoto.ratings.push({ reviewerId, reviewerName, ratings });
     let result = await ratePhoto.save();
     res.json(result);
