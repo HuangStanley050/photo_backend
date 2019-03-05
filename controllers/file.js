@@ -159,16 +159,27 @@ exports.unmake_public = async (req, res, next) => {
 exports.get_showcase = async (req, res, next) => {
   let publicImages = [];
   let result = [];
+  let ratedPhotos = [];
+  let ratedPhotos_result = [];
   try {
     publicImages = await Public.find({});
+    ratedPhotos = await Rating.find({});
     //console.log(publicImages);
     publicImages.forEach(publicimage => {
       for (let i of publicimage.showCase) {
         result.push(i);
       }
     });
-    //console.log(result);
-    res.json({ result });
+
+    ratedPhotos.forEach(ratePhoto => {
+      ratedPhotos_result.push({
+        id: ratePhoto.photoId,
+        reviewers: ratePhoto.ratings
+      });
+    });
+
+    //console.log(ratedPhotos_result);
+    res.json({ result: result, photosRated: ratedPhotos_result });
   } catch (err) {
     next(err);
   }
