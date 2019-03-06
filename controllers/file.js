@@ -197,8 +197,9 @@ exports.ratePhoto = async (req, res, next) => {
         photoId: photoId,
         ratings: [{ reviewerId, reviewerName, ratings }]
       });
-      await newRatePhoto.save();
-      return res.json({ msg: "created" });
+      let newPhoto = await newRatePhoto.save();
+      let transformPhoto = { id: newPhoto.id, reviewers: newPhoto.ratings };
+      return res.json(transformPhoto);
     }
 
     //=======find out if the person has already reviewed the photo
