@@ -189,6 +189,7 @@ exports.ratePhoto = async (req, res, next) => {
   //res.json({ id: req.params.photoId, data: req.body });
   const { reviewerId, photoId, ratings, reviewerName } = req.body;
   //console.log(reviewerId, photoId, ratings);
+  let ratedPhotos_result = [];
 
   try {
     let ratePhoto = await Rating.findOne({ photoId });
@@ -198,8 +199,15 @@ exports.ratePhoto = async (req, res, next) => {
         ratings: [{ reviewerId, reviewerName, ratings }]
       });
       let newPhoto = await newRatePhoto.save();
-      let transformPhoto = { id: newPhoto.id, reviewers: newPhoto.ratings };
-      return res.json(transformPhoto);
+      //let transformPhoto = { id: newPhoto.id, reviewers: newPhoto.ratings };
+      let ratedPhotos = await Rating.find({});
+      ratedPhotos.forEach(ratePhoto => {
+        ratedPhotos_result.push({
+          id: ratePhoto.photoId,
+          reviewers: ratePhoto.ratings
+        });
+      });
+      return res.json(ratedPhotos_result);
     }
 
     //=======find out if the person has already reviewed the photo
@@ -217,8 +225,18 @@ exports.ratePhoto = async (req, res, next) => {
     //================end test=========================//
 
     ratePhoto.ratings.push({ reviewerId, reviewerName, ratings });
-    let result = await ratePhoto.save();
-    res.json(result);
+    await ratePhoto.save();
+
+    let ratedPhotos = await Rating.find({});
+
+    ratedPhotos.forEach(ratePhoto => {
+      ratedPhotos_result.push({
+        id: ratePhoto.photoId,
+        reviewers: ratePhoto.ratings
+      });
+    });
+
+    res.json(ratedPhotos_result);
   } catch (err) {
     next(err);
   }
