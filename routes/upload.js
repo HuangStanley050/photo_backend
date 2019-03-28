@@ -9,7 +9,7 @@ const passport = require("passport");
 const storage = new GridFsStorage({
   url: config.connection,
   file: (req, file) => {
-    if (file.mimetype === "image/jpeg") {
+    if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
       return {
         bucketName: "photos",
         filename: file.originalname

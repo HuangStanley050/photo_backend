@@ -4,13 +4,18 @@ const Public = require("../models/public");
 const Rating = require("../models/rating");
 const Grid = require("gridfs-stream");
 const { connection } = require("../config/config");
-const conn = mongoose.createConnection(connection, { useNewUrlParser: true });
+//const conn = mongoose.createConnection(connection, { useNewUrlParser: true });
+const conn = mongoose.connection;
 
 let gfs;
 
+// conn.once("open", () => {
+//   gfs = Grid(conn.db, mongoose.mongo);
+//   gfs.collection("photos");
+// });
+
 conn.once("open", () => {
-  gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection("photos");
+  gfs = new mongoose.mongo.GridFSBucket(conn.db, { bucketName: "photos" });
 });
 
 //console.log(gfs);
@@ -45,7 +50,16 @@ exports.get_file = (req, res, next) => {
 };
 
 exports.get_one_image = (req, res, next) => {
-  // gfs.files.findOne({ filename: req.params.fileName }, (err, file) => {
+  const photoId = mongoose.Types.ObjectId(req.params.photoId);
+
+  try {
+    const download = gfs.openDownloadStream(photoId);
+    return download.pipe(res);
+  } catch (err) {
+    next(err);
+  }
+  //console.log(req.params.photoId);
+  // gfs.files.findOne({ _id: photoId }, (err, file) => {
   //   if (err) {
   //     next(err);
   //   }
@@ -57,22 +71,6 @@ exports.get_one_image = (req, res, next) => {
   //     readstream.pipe(res);
   //   }
   // });
-  //=========================Changing to get the image via photoId====================//
-
-  const photoId = mongoose.Types.ObjectId(req.params.photoId);
-  //console.log(req.params.photoId);
-  gfs.files.findOne({ _id: photoId }, (err, file) => {
-    if (err) {
-      next(err);
-    }
-    if (!file || file.length === 0 || file === null) {
-      const error = new Error("no such file");
-      next(error);
-    } else {
-      const readstream = gfs.createReadStream(file.filename);
-      readstream.pipe(res);
-    }
-  });
 };
 
 exports.load_user_images = async (req, res, next) => {
@@ -161,6 +159,7 @@ exports.get_showcase = async (req, res, next) => {
   let result = [];
   let ratedPhotos = [];
   let ratedPhotos_result = [];
+
   try {
     publicImages = await Public.find({});
     ratedPhotos = await Rating.find({});
