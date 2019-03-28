@@ -20,34 +20,34 @@ conn.once("open", () => {
 
 //console.log(gfs);
 
-exports.get_files = (req, res, next) => {
-  gfs.files.find().toArray((err, files) => {
-    if (err) {
-      next(err);
-    }
+// exports.get_files = (req, res, next) => {
+//   gfs.files.find().toArray((err, files) => {
+//     if (err) {
+//       next(err);
+//     }
 
-    if (!files || files.length === 0) {
-      const error = new Error("no files found");
-      next(error);
-    }
-    return res.json(files);
-  });
-};
+//     if (!files || files.length === 0) {
+//       const error = new Error("no files found");
+//       next(error);
+//     }
+//     return res.json(files);
+//   });
+// };
 
-exports.get_file = (req, res, next) => {
-  //res.json({ msg: req.params.fileName });
-  gfs.files.findOne({ filename: req.params.fileName }, (err, file) => {
-    if (err) {
-      next(err);
-    }
-    if (!file || file.length === 0 || file === null) {
-      const error = new Error("no such file");
-      next(error);
-    } else {
-      return res.json(file);
-    }
-  });
-};
+// exports.get_file = (req, res, next) => {
+//   //res.json({ msg: req.params.fileName });
+//   gfs.files.findOne({ filename: req.params.fileName }, (err, file) => {
+//     if (err) {
+//       next(err);
+//     }
+//     if (!file || file.length === 0 || file === null) {
+//       const error = new Error("no such file");
+//       next(error);
+//     } else {
+//       return res.json(file);
+//     }
+//   });
+// };
 
 exports.get_one_image = (req, res, next) => {
   const photoId = mongoose.Types.ObjectId(req.params.photoId);
@@ -58,7 +58,7 @@ exports.get_one_image = (req, res, next) => {
   } catch (err) {
     next(err);
   }
-  //console.log(req.params.photoId);
+
   // gfs.files.findOne({ _id: photoId }, (err, file) => {
   //   if (err) {
   //     next(err);

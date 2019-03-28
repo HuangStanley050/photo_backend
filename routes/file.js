@@ -32,8 +32,8 @@ const check_token = (req, res, next) => {
 };
 
 router
-  .get("/", fileController.get_files)
-  .get("/:fileName", fileController.get_file)
+  //.get("/", fileController.get_files)
+  //.get("/:fileName", fileController.get_file)
   .get("/image/:photoId", check_token, fileController.get_one_image)
   .get("/publicImage/:photoId", fileController.get_one_image)
   .get(
